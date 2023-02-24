@@ -8,8 +8,8 @@ import "@chainlink/contracts/src/v0.8/interfaces/LinkTokenInterface.sol";
 
 
 contract randomGenarator is VRFConsumerBaseV2 {
-    event requestSent(uint256 requestId, uint32 numWords);
-    event requestFulfilled(uint256 requestId, uint256[] randomWords);
+    event requestSent(uint256 indexed requestId, uint32 indexed numWords);
+    event requestFulfilled(uint256 indexed requestId, uint256[] indexed randomWords);
 
 
     //uint256[] randomWords;
@@ -38,6 +38,8 @@ contract randomGenarator is VRFConsumerBaseV2 {
     uint256[] public randomResult;
 
     uint price = 150 gwei;
+
+    mapping (address => uint256) internal IDlists;
     
 
     constructor() VRFConsumerBaseV2(0x2Ca8E0C643bDe4C2E08ab1fA0da3401AdAD7734D)
@@ -67,6 +69,11 @@ contract randomGenarator is VRFConsumerBaseV2 {
     function fulfillRandomWords(uint256 _requestId, uint256[] memory _randomWords) internal override {
         randomResult = _randomWords;
         emit requestFulfilled(_requestId, _randomWords);
+    }
+
+
+    function getMyRequestID() public view returns(uint256){
+        return IDlists[msg.sender];
     }
 
 
